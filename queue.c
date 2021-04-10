@@ -121,7 +121,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     list_ele_t *temp = q->head;
     temp->value = q->head->value;
     temp->next = NULL;
-    strncpy(sp, q->head->value);
+    strncpy(sp, q->head->value, bufsize - 1);
     free(temp);
     free(temp->value);
     q->head = q->head->next;
@@ -187,7 +187,7 @@ list_ele_t *merge(list_ele_t *lhead, list_ele_t *rhead)
             merge2 = *nh;
         } else {
             merge2->next = *nh;
-            megre2 = merge2->next;
+            merge2 = merge2->next;
         }
         *nh = *nh->next;
     }
