@@ -15,7 +15,6 @@ queue_t *q_new()
     if (!q)
         return NULL;
     q->head = NULL;
-    q->tail = NULL;
     q->size = 0;
     return q;
 }
@@ -68,9 +67,6 @@ bool q_insert_head(queue_t *q, char *s)
 
     newh->next = q->head;
     q->head = newh;
-    if (!q->tail) {
-        q->tail = q->head;
-    }
     q->size += 1;
     return true;
 }
@@ -97,13 +93,12 @@ bool q_insert_tail(queue_t *q, char *s)
     }
     strncpy(newh->value, s, strlen(s));
     newh->next = NULL;
-    if (!q->tail) {
-        q->head = newh;
-        q->tail = q->head;
-    } else {
-        q->tail->next = newh;
-        q->tail = q->tail->next;
+    list_ele_t *iter = q->head;
+    ;
+    while (iter->next) {
+        iter = iter->next;
     }
+    iter->next = newh;
     q->size += 1;
     return true;
 }
@@ -169,7 +164,6 @@ void q_reverse(queue_t *q)
         free(past);
         return;
     }
-    q->tail = q->head;
     while (q->head) {
         cur = q->head;
         q->head = q->head->next;
