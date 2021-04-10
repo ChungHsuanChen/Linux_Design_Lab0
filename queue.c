@@ -140,9 +140,6 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* Remember: It should operate in O(1) time */
-    /* TODO: Remove the above comment when you are about to implement. */
     if (!q)
         return 0;
     return q->size;
@@ -157,10 +154,71 @@ int q_size(queue_t *q)
  */
 void q_reverse(queue_t *q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || !q->head)
+        return;
+    list_ele_t *cur;
+    cur = malloc(sizeof(list_ele_t));
+    if (!cur) {
+        free(cur);
+        return;
+    }
+    list_ele_t *past;
+    past = malloc(sizeof(list_ele_t));
+    if (!past) {
+        free(cur);
+        free(past);
+        return;
+    }
+    q->tail = q->head;
+    while (q->head) {
+        cur = q->head;
+        q->head = q->head->next;
+        cur->next = past;
+        past = cur;
+    }
 }
-
+list_ele_t *merge(list_ele_t *lhead, list_ele_t *rhead)
+{
+    list_ele_t *merge1 = NULL;
+    list_ele_t *merge2 = NULL;
+    while (lhead && rhead) {
+        list_ele_t **nh;
+        if (strcmp(lhead->value, rhead->value) <= 0) {
+            nh = &lhead;
+        } else {
+            nh = &rhead;
+        }
+        if (!merge2) {
+            merge1 = *nh;
+            merge2 = *nh;
+        } else {
+            merge2->next = *nh;
+            megre2 = merge2->next;
+        }
+        *nh = *nh->next;
+    }
+    if (lhead) {
+        merge2->next = lhead;
+    } else {
+        merge2->next = rhead;
+    }
+    return merge1;
+}
+void merge_sort(list_ele_t **head, int len)
+{
+    list_ele_t *l = *head, *r = *head;
+    int half = len / 2;
+    int i;
+    for (i = 0; i < half; i++) {
+        r = r->next;
+    }
+    list_ele_t *temp = r;
+    r = r->next;
+    temp->next = NULL;
+    merge_sort(&l, half);
+    merge_sort(&r, len - half);
+    *head = merge(l, r);
+}
 /*
  * Sort elements of queue in ascending order
  * No effect if q is NULL or empty. In addition, if q has only one
@@ -170,4 +228,7 @@ void q_sort(queue_t *q)
 {
     /* TODO: You need to write the code for this function */
     /* TODO: Remove the above comment when you are about to implement. */
+    if (!q || !q->head || q->size == 1)
+        return;
+    merge_sort(&q->head, q->size);
 }
