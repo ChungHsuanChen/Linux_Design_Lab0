@@ -189,7 +189,7 @@ list_ele_t *merge(list_ele_t *lhead, list_ele_t *rhead)
             merge2->next = *nh;
             merge2 = merge2->next;
         }
-        *nh = *nh->next;
+        *nh = (*nh)->next;
     }
     if (lhead) {
         merge2->next = lhead;
